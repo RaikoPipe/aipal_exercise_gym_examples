@@ -16,7 +16,7 @@ class GridWorldEnv(gym.env):
         # Observations are dictionaries containing the agent's positions
         # Each location is encoded as an element of {0, ..., "size"}^2, i.e. MultiDiscrete([size, size])
 
-        self.observaion_space = spaces.Dict({
+        self.observation_space = spaces.Dict({
             "agent": spaces.Box(0, size - 1, shape=(2,), dtype=int),
             "target": spaces.Box(0, size - 1, shape=(2,), dtype=int)
         }
