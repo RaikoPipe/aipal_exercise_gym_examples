@@ -6,7 +6,7 @@ from gymnasium import spaces
 from gymnasium.envs.registration import register
 
 
-class GridWorldEnv(gym.env):
+class GridWorldEnv(gym.Env):
     metadata = {'render.modes': ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode=None, size=5):
