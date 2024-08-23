@@ -3,13 +3,12 @@ import pygame
 
 import gymnasium as gym
 from gymnasium import spaces
-from gymnasium.envs.registration import register
 
 
 class GridWorldEnv(gym.Env):
     metadata = {'render.modes': ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=5):
+    def __init__(self, render_mode=None, size=5, random_start=False, random_target=False):
         self.size = size  # the size of the square grid
         self.window_size = 512  # size of the pygame window
 
@@ -51,6 +50,9 @@ class GridWorldEnv(gym.Env):
         self.window = None
         self.clock = None
 
+        self.random_start = random_start
+        self.random_target = random_target
+
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
 
@@ -62,17 +64,17 @@ class GridWorldEnv(gym.Env):
             )
         }
 
-    def reset(self, seed=None, options=None):
+    def reset(self, seed=None):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
-        if options.get('fixed_start'):
+        if self.fixed_start:
             self._agent_location = np.array([0, 0])
         else:
             # Choose the agent's location uniformly at random
             self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
 
-        if options.get('fixed_target'):
+        if self.fixed_target:
             self._target_location = np.array([self.size - 1, self.size - 1])
         else:
             # We will sample the target's location randomly until it does not coincide with the agent's location
@@ -88,7 +90,7 @@ class GridWorldEnv(gym.Env):
 
         return observation, info
 
-    def step(self, action):
+    def st_getep(self, action):
         # Map the action (element of {0, 1, 2, 3}) to the direction we walk in
         direction = self._action_to_direction[action]
 
