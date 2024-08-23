@@ -93,7 +93,7 @@ class GridWorldEnv(gym.Env):
 
         return observation, info
 
-    def st_getep(self, action):
+    def step(self, action):
         # Map the action (element of {0, 1, 2, 3}) to the direction we walk in
         direction = self._action_to_direction[action]
 
