@@ -53,8 +53,11 @@ class GridWorldEnv(gym.Env):
         self.random_start = random_start
         self.random_target = random_target
 
+        self._agent_location = [0,0]
+        self._target_location = [0,0]
+
     def _get_obs(self):
-        return {"agent": self._agent_location, "target": self._target_location}
+        return {"agent": np.array(self._agent_location), "target": np.array(self._target_location)}
 
     def _get_info(self):
         return {
