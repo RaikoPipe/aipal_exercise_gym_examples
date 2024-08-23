@@ -68,19 +68,22 @@ class GridWorldEnv(gym.Env):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
-        if self.fixed_start:
-            self._agent_location = np.array([0, 0])
-        else:
+        if self.random_start:
             # Choose the agent's location uniformly at random
             self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
-
-        if self.fixed_target:
-            self._target_location = np.array([self.size - 1, self.size - 1])
         else:
+            # Start the agent in the top left corner
+            self._agent_location = np.array([0, 0])
+
+
+        if self.random_target:
             # We will sample the target's location randomly until it does not coincide with the agent's location
             self._target_location = self._agent_location
             while np.array_equal(self._target_location, self._agent_location):
                 self._target_location = self.np_random.integers(0, self.size, size=2, dtype=int)
+        else:
+            # Place the target in the bottom right corner
+            self._target_location = np.array([self.size - 1, self.size - 1])
 
         observation = self._get_obs()
         info = self._get_info()
