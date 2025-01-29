@@ -8,7 +8,7 @@ from gymnasium import spaces
 class GridWorldEnv(gym.Env):
     metadata = {'render.modes': ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=5, random_start=False, random_target=False):
+    def __init__(self, render_mode=None, size=5, random_start=False, random_target=False, reward_type="sparse"):
         self.size = size  # the size of the square grid
         self.window_size = 512  # size of the pygame window
 
@@ -50,12 +50,17 @@ class GridWorldEnv(gym.Env):
         self.window = None
         self.clock = None
 
+        # adding class variables
         self.random_start = random_start
         self.random_target = random_target
 
+        # initialising the agent and target locations
         self._start_location = [0,0]
         self._agent_location = [0,0]
         self._target_location = [0,0]
+
+        # setting the reward type
+        self.reward_type = reward_type
 
     def _get_obs(self):
         return {"agent": np.array(self._agent_location), "target": np.array(self._target_location)}
@@ -108,7 +113,13 @@ class GridWorldEnv(gym.Env):
         # An episode is done if the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
 
-        reward = 1 if terminated else 0 # binary sparse rewards
+        if self.reward_type == "dense":
+            # The reward is the negative Manhattan distance to the target
+            reward = -(np.abs(self._target_location[0] - self._agent_location[0])
+                       + np.abs(self._target_location[1] - self._agent_location[1]))
+
+        else:
+            reward = 0 if terminated else -1 # binary sparse rewards
         observation = self._get_obs()
         info = self._get_info()
 
