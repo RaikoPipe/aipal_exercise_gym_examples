@@ -53,6 +53,7 @@ class GridWorldEnv(gym.Env):
         self.random_start = random_start
         self.random_target = random_target
 
+        self._start_location = [0,0]
         self._agent_location = [0,0]
         self._target_location = [0,0]
 
@@ -78,6 +79,7 @@ class GridWorldEnv(gym.Env):
             # Start the agent in the top left corner
             self._agent_location = np.array([0, 0])
 
+        self._start_location = self._agent_location
 
         if self.random_target:
             # We will sample the target's location randomly until it does not coincide with the agent's location
@@ -135,10 +137,20 @@ class GridWorldEnv(gym.Env):
                 self.window_size / self.size
         )  # The size of a single grid square in pixels
 
-        # First we draw the target
+        # First, we draw the start location
         pygame.draw.rect(
             canvas,
-            (255, 0, 0),
+            (255, 255, 0),
+            pygame.Rect(
+                pix_square_size * self._start_location,
+                (pix_square_size, pix_square_size),
+            ),
+        )
+
+        # We draw the target
+        pygame.draw.rect(
+            canvas,
+            (0, 255, 0),
             pygame.Rect(
                 pix_square_size * self._target_location,
                 (pix_square_size, pix_square_size),
