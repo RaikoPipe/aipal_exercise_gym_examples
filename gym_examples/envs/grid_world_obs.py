@@ -203,6 +203,17 @@ class GridWorldObsEnv(gym.Env):
         # An episode is done if the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
 
+        reward = self._compute_reward(direction, terminated)
+
+        observation = self._get_obs()
+        info = self._get_info()
+
+        if self.render_mode == "human":
+            self._render_frame()
+
+        return observation, reward, terminated, False, info
+
+    def _compute_reward(self, direction, terminated):
         if self.reward_type == "dense":
             # The reward is the negative Manhattan distance to the target
             reward = -(np.abs(self._target_location[0] - self._agent_location[0])
@@ -218,14 +229,7 @@ class GridWorldObsEnv(gym.Env):
                 reward = -1.1  # Slightly higher penalty for hitting obstacles
             else:
                 reward = -1
-
-        observation = self._get_obs()
-        info = self._get_info()
-
-        if self.render_mode == "human":
-            self._render_frame()
-
-        return observation, reward, terminated, False, info
+        return reward
 
     def render(self):
         if self.render_mode == "rgb_array":

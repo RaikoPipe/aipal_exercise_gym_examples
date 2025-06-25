@@ -113,13 +113,7 @@ class GridWorldEnv(gym.Env):
         # An episode is done if the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
 
-        if self.reward_type == "dense":
-            # The reward is the negative Manhattan distance to the target
-            reward = -(np.abs(self._target_location[0] - self._agent_location[0])
-                       + np.abs(self._target_location[1] - self._agent_location[1]))
-
-        else:
-            reward = 0 if terminated else -1 # binary sparse rewards
+        reward = self._compute_reward(terminated)
         observation = self._get_obs()
         info = self._get_info()
 
@@ -127,6 +121,16 @@ class GridWorldEnv(gym.Env):
             self._render_frame()
 
         return observation, reward, terminated, False, info
+
+    def _compute_reward(self, terminated):
+        if self.reward_type == "dense":
+            # The reward is the negative Manhattan distance to the target
+            reward = -(np.abs(self._target_location[0] - self._agent_location[0])
+                       + np.abs(self._target_location[1] - self._agent_location[1]))
+
+        else:
+            reward = 0 if terminated else -1  # binary sparse rewards
+        return reward
 
     def render(self):
         if self.render_mode == "rgb_array":
